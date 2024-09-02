@@ -1,0 +1,42 @@
+#include <array>
+#include <iostream>
+
+constexpr long long powerOf10(int exponent) {
+  long long result{1};
+  for (size_t i{0}; i < exponent; ++i) {
+    result *= 10;
+  }
+  return result;
+}
+
+constexpr std::array<long long, 15> get_precomputed10N() {
+  std::array<long long, 15> arr{};
+  for (size_t i{0}; i < 15; ++i)
+    arr[i] = powerOf10(i);
+  return arr;
+}
+
+constexpr std::array<long long, 15> precomputed10N{get_precomputed10N()};
+
+int get_digit(long long number, size_t at) {
+  return number % precomputed10N[at + 1] / precomputed10N[at];
+}
+
+int check(long long id) {
+  int result{0};
+  for (size_t i{2}; i < 14; ++i)
+    result += i * get_digit(id, i - 2);
+  return (11 - result % 11) % 10;
+}
+
+int main() {
+  long long id{120090142519};
+  std::cin >> id;
+
+  for (int i{11}; i >= 0; --i) {
+    std::cout << get_digit(id, i);
+    if (i == 0 || i == 2 || i == 7 || i == 11)
+      std::cout << "-";
+  }
+  std::cout << check(id) << std::endl;
+}
